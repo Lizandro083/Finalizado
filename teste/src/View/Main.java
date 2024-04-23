@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Main {
+    private static List<ItemMenu> itensSelecionados = new ArrayList<>();
+    private static Cardapio cardapio; 
+
     public static void main(String[] args) {
-        Cardapio cardapio = new Cardapio();
+        cardapio = new Cardapio(); 
         cardapio.inicializarCardapio();
 
         int escolhaOpcao;
@@ -26,12 +29,13 @@ public class Main {
 
             switch (escolhaOpcao) {
                 case 0:
-                    escolherItem(cardapio.getPratos());
+                    escolherItem(cardapio.getPratos(), "Prato");
                     break;
                 case 1:
-                    escolherItem(cardapio.getBebidas());
+                    escolherItem(cardapio.getBebidas(), "Bebida");
                     break;
                 case 2:
+                    mostrarNotaFiscal();
                     JOptionPane.showMessageDialog(null, "Compra finalizada. Obrigado!",
                             "Finalizar", JOptionPane.INFORMATION_MESSAGE);
                     break;
@@ -42,31 +46,48 @@ public class Main {
         } while (escolhaOpcao != 2);
     }
 
-    public static void escolherItem(List<ItemMenu> itens) {
+    public static void escolherItem(List<ItemMenu> itens, String tipo) {
         int escolha;
         do {
             StringBuilder opcoes = new StringBuilder();
-            opcoes.append("Escolha um item:\n");
+            opcoes.append("Escolha um ").append(tipo).append(":\n");
             for (int i = 0; i < itens.size(); i++) {
                 opcoes.append(i).append(" - ").append(itens.get(i).getNome()).append("\n");
             }
             opcoes.append("9 - Finalizar compra");
 
             String escolhaItem = JOptionPane.showInputDialog(null, opcoes.toString(),
-                    "Escolher Item", JOptionPane.PLAIN_MESSAGE);
+                    "Escolher " + tipo, JOptionPane.PLAIN_MESSAGE);
 
             escolha = Integer.parseInt(escolhaItem);
 
             if (escolha >= 0 && escolha < itens.size()) {
+                itensSelecionados.add(itens.get(escolha));
                 JOptionPane.showMessageDialog(null, "Você escolheu: " + itens.get(escolha).getNome(),
                         "Escolha", JOptionPane.INFORMATION_MESSAGE);
+
+                String continuar = JOptionPane.showInputDialog(null,
+                        "O que deseja fazer agora?\n" +
+                                "0 - Escolher outro Prato\n" +
+                                "1 - Escolher outra Bebida\n" +
+                                "2 - Finalizar",
+                        "Próxima Ação", JOptionPane.PLAIN_MESSAGE);
+
+                int continuarEscolha = Integer.parseInt(continuar);
+
+                if (continuarEscolha == 0) {
+                    escolherItem(cardapio.getPratos(), "Prato");
+                } else if (continuarEscolha == 1) {
+                    escolherItem(cardapio.getBebidas(), "Bebida");
+                } else if (continuarEscolha == 2) {
+                    escolherPagamento();
+                    break;
+                }
             } else if (escolha != 9) {
                 JOptionPane.showMessageDialog(null, "Opção inválida!",
                         "Erro", JOptionPane.ERROR_MESSAGE);
             }
         } while (escolha != 9);
-
-        escolherPagamento();
     }
 
     public static void escolherPagamento() {
@@ -95,16 +116,30 @@ public class Main {
                         "1 - Crédito",
                 "Tipo de Cartão", JOptionPane.PLAIN_MESSAGE);
 
-        
-        gerarNotaPedido();
+        gerarNotaPedido(); 
 
         JOptionPane.showMessageDialog(null, "Compra finalizada. Obrigado!",
                 "Finalizar", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void gerarNotaPedido() {
-        JOptionPane.showMessageDialog(null, "--- Nota do Pedido ---\n" +
-                "Detalhes do pedido aqui...",
+        StringBuilder nota = new StringBuilder();
+        nota.append("--- Nota do Pedido ---\n");
+        nota.append("Itens escolhidos:\n");
+        double total = 0;
+
+        for (ItemMenu item : itensSelecionados) {
+            nota.append(item.getNome()).append(" - R$ ").append(item.getPreco()).append("\n");
+            total += item.getPreco();
+        }
+
+        nota.append("\nTotal: R$ ").append(total);
+
+        JOptionPane.showMessageDialog(null, nota.toString(),
                 "Nota do Pedido", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    public static void mostrarNotaFiscal() {
+        gerarNotaPedido(); 
     }
 }
