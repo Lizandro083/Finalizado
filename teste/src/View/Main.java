@@ -22,7 +22,8 @@ public class Main {
                     "Escolha uma opção:\n" +
                             "0 - Pratos\n" +
                             "1 - Bebidas\n" +
-                            "2 - Sair",
+                            "2 - Sobremesas\n" +
+                            "3 - Sair",
                     "Opções", JOptionPane.PLAIN_MESSAGE);
 
             escolhaOpcao = Integer.parseInt(opcaoEscolhida);
@@ -34,7 +35,10 @@ public class Main {
                 case 1:
                     escolherItem(cardapio.getBebidas(), "Bebida");
                     break;
-                case 2:
+                 case 2:
+                    escolherItem(cardapio.getsobremesas(), "sobremesas");
+                    break;
+                case 3:
                     mostrarNotaFiscal();
                     JOptionPane.showMessageDialog(null, "Compra finalizada. Obrigado!",
                             "Finalizar", JOptionPane.INFORMATION_MESSAGE);
@@ -43,7 +47,7 @@ public class Main {
                     JOptionPane.showMessageDialog(null, "Opção inválida!",
                             "Erro", JOptionPane.ERROR_MESSAGE);
             }
-        } while (escolhaOpcao != 2);
+        } while (escolhaOpcao != 3);
     }
 
     public static void escolherItem(List<ItemMenu> itens, String tipo) {
@@ -70,7 +74,8 @@ public class Main {
                         "O que deseja fazer agora?\n" +
                                 "0 - Escolher outro Prato\n" +
                                 "1 - Escolher outra Bebida\n" +
-                                "2 - Finalizar",
+                                "2 - Escolher outra Sobremesa\n" +
+                                "3 - Finalizar",
                         "Próxima Ação", JOptionPane.PLAIN_MESSAGE);
 
                 int continuarEscolha = Integer.parseInt(continuar);
@@ -79,7 +84,9 @@ public class Main {
                     escolherItem(cardapio.getPratos(), "Prato");
                 } else if (continuarEscolha == 1) {
                     escolherItem(cardapio.getBebidas(), "Bebida");
-                } else if (continuarEscolha == 2) {
+                 } else if (continuarEscolha == 2) {
+                    escolherItem(cardapio.getsobremesas(), "sobremesas");
+                } else if (continuarEscolha == 3) {
                     escolherPagamento();
                     break;
                 }
@@ -110,7 +117,8 @@ public class Main {
     }
 
     public static void escolherTipoCartao() {
-        String tipoCartao = JOptionPane.showInputDialog(null,
+        @SuppressWarnings("unused")
+		String tipoCartao = JOptionPane.showInputDialog(null,
                 "Escolha o tipo de cartão:\n" +
                         "0 - Débito\n" +
                         "1 - Crédito",
